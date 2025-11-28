@@ -1,10 +1,12 @@
-use std::cmp::Ordering;
+// use std::cmp::Ordering;
 use std::io;
 
-use rand::Rng;
+// use rand::Rng;
 
 fn main() {
-    // println!("Guess the number!");
+    //  ***** Chapter 2 *****
+    //
+    //  println!("Guess the number!");
 
     // let secret_number = rand::thread_rng().gen_range(1..=100);
 
@@ -38,28 +40,51 @@ fn main() {
     //     }
     // }
     //
+    // *********************************************************************
+    // ***** 3.1 *****
+    // let a: u8 = 250;
+    // let b: u8 = 10;
+
+    // let result = a.wrapping_add(b); // 250 + 10 = 4 (wraps around)
+    // println!("wrapping_add: {}", result);
+
+    // match a.checked_add(b) {
+    //     Some(v) => println!("checked_add: {}", v),
+    //     None => println!("checked_add overflowed"),
+    // }
+
+    // let (value, overflowed) = a.overflowing_add(b);
+    // println!(
+    //     "overflowing_add: value={}, overflowed={}",
+    //     value, overflowed
+    // );
+
+    // let result = a.saturating_add(b); // saturates at 255
+    // println!("saturating_add: {}", result);
+
+    // let small: u8 = 5;
+    // let result2 = small.saturating_sub(10); // saturates at 0
+    // println!("saturating_sub: {}", result2);
     //
-    let a: u8 = 250;
-    let b: u8 = 10;
+    // *******************************************************************
+    // **** 3.2 ****
 
-    let result = a.wrapping_add(b); // 250 + 10 = 4 (wraps around)
-    println!("wrapping_add: {}", result);
+    let a = [1, 2, 3, 4, 5];
 
-    match a.checked_add(b) {
-        Some(v) => println!("checked_add: {}", v),
-        None => println!("checked_add overflowed"),
-    }
+    println!("Please enter an array index.");
 
-    let (value, overflowed) = a.overflowing_add(b);
-    println!(
-        "overflowing_add: value={}, overflowed={}",
-        value, overflowed
-    );
+    let mut index = String::new();
 
-    let result = a.saturating_add(b); // saturates at 255
-    println!("saturating_add: {}", result);
+    io::stdin()
+        .read_line(&mut index)
+        .expect("Failed to read line");
 
-    let small: u8 = 5;
-    let result2 = small.saturating_sub(10); // saturates at 0
-    println!("saturating_sub: {}", result2);
+    let index: usize = index
+        .trim()
+        .parse()
+        .expect("Index entered was not a number");
+
+    let element = a[index];
+
+    println!("The value of the element at index {index} is: {element}");
 }
