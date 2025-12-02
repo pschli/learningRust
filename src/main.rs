@@ -178,10 +178,37 @@
 //     output.replace_range(.., "Hello world");
 // }
 
+// fn main() {
+//     let mut v: Vec<String> = vec![String::from("Hello world")];
+//     let mut s: String = v.remove(0);
+//     s.push('!');
+//     println!("{s}");
+//     assert!(v.len() == 0);
+// }
+
+// ******************************************************************
+// ***** Slices ****
+// Slices let you reference a contiguous sequence of elements in a collection rather than the whole collection. A slice is a kind of reference, so it is a non-owning pointer.
+
 fn main() {
-    let mut v: Vec<String> = vec![String::from("Hello world")];
-    let mut s: String = v.remove(0);
-    s.push('!');
-    println!("{s}");
-    assert!(v.len() == 0);
+    fn first_word(s: &String) -> usize {
+        let bytes = s.as_bytes();
+
+        for (i, &item) in bytes.iter().enumerate() {
+            if item == b' ' {
+                return i;
+            }
+        }
+        s.len()
+    }
+
+    let s = String::from("hello world");
+    let end1 = first_word(&s);
+
+    let hello: &str = &s[0..end1]; // <- slice
+    let world: &str = &s[end1 + 1..s.len()]; // <- slice
+    let s2: &String = &s;
+
+    println!("{} {}", hello, world);
+    println!("{}", s2);
 }
