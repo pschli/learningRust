@@ -190,25 +190,48 @@
 // ***** Slices ****
 // Slices let you reference a contiguous sequence of elements in a collection rather than the whole collection. A slice is a kind of reference, so it is a non-owning pointer.
 
-fn main() {
-    fn first_word(s: &String) -> usize {
-        let bytes = s.as_bytes();
+// fn main() {
+//     fn first_word(s: &String) -> usize {
+//         let bytes = s.as_bytes();
 
-        for (i, &item) in bytes.iter().enumerate() {
-            if item == b' ' {
-                return i;
-            }
+//         for (i, &item) in bytes.iter().enumerate() {
+//             if item == b' ' {
+//                 return i;
+//             }
+//         }
+//         s.len()
+//     }
+
+//     let s = String::from("hello world");
+//     let end1 = first_word(&s);
+
+//     let hello: &str = &s[..end1]; // <- slice
+//     let world: &str = &s[end1 + 1..s.len()]; // <- slice
+//     let s2: &String = &s;
+
+//     println!("{} {}", hello, world);
+//     println!("{}", s2);
+// }
+
+fn first_word(s: &str) -> &str {
+    let bytes = s.as_bytes();
+
+    for (i, &item) in bytes.iter().enumerate() {
+        if item == b' ' {
+            return &s[0..i];
         }
-        s.len()
     }
 
-    let s = String::from("hello world");
-    let end1 = first_word(&s);
-
-    let hello: &str = &s[0..end1]; // <- slice
-    let world: &str = &s[end1 + 1..s.len()]; // <- slice
-    let s2: &String = &s;
-
-    println!("{} {}", hello, world);
-    println!("{}", s2);
+    &s[..]
 }
+
+fn main() {
+    let s = String::from("hello world");
+    let word = first_word(&s);
+    if s.len() > word.len() {
+        println!("the first word is: {}", word);
+    } else {
+        println!("There is no <space> in: {}", word);
+    }
+}
+// slices also work with arrays
