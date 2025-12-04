@@ -213,25 +213,62 @@
 //     println!("{}", s2);
 // }
 
-fn first_word(s: &str) -> &str {
-    let bytes = s.as_bytes();
+// fn first_word(s: &str) -> &str {
+//     let bytes = s.as_bytes();
 
-    for (i, &item) in bytes.iter().enumerate() {
-        if item == b' ' {
-            return &s[0..i];
-        }
+//     for (i, &item) in bytes.iter().enumerate() {
+//         if item == b' ' {
+//             return &s[0..i];
+//         }
+//     }
+
+//     &s[..]
+// }
+
+// fn main() {
+//     let s = String::from("hello world");
+//     let word = first_word(&s);
+//     if s.len() > word.len() {
+//         println!("the first word is: {}", word);
+//     } else {
+//         println!("There is no <space> in: {}", word);
+//     }
+// }
+// slices also work with arrays
+// *****************************************************************
+// **** Structs ****
+
+struct User {
+    active: bool,
+    username: String,
+    email: String,
+    sign_in_count: u64,
+}
+
+struct Color(i32, i32, i32); // <- Tuple Struct
+
+fn build_user(email: String, username: String) -> User {
+    User {
+        active: true,
+        // username: username,
+        // email: email,
+        email,    // <- init shorthand
+        username, // <- variable name matches key
+        sign_in_count: 1,
     }
-
-    &s[..]
 }
 
 fn main() {
-    let s = String::from("hello world");
-    let word = first_word(&s);
-    if s.len() > word.len() {
-        println!("the first word is: {}", word);
-    } else {
-        println!("There is no <space> in: {}", word);
-    }
+    let user1 = build_user(
+        String::from("someone@example.com"),
+        String::from("someusername123"),
+    );
+
+    println!("{}", user1.email);
+    println!("{}", user1.username);
+    println!("{}", user1.active);
+    println!("{}", user1.sign_in_count);
+    let black = Color(0, 0, 0);
+    let Color(r, g, b) = &black; // <- destructuring the tuple struct
+    println!("{}, {}, {}", r, g, b);
 }
-// slices also work with arrays
