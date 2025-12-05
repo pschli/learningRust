@@ -341,36 +341,96 @@
 //     );
 // }
 
-struct Rectangle {
-    width: u32,
-    height: u32,
-}
+// struct Rectangle {
+//     width: u32,
+//     height: u32,
+// }
 
-impl Rectangle {
-    fn area(&self) -> u32 {
-        self.width * self.height
-    }
+// impl Rectangle {
+//     fn area(&self) -> u32 {
+//         self.width * self.height
+//     }
 
-    fn can_hold(&self, other: &Rectangle) -> bool {
-        (self.width > other.width && self.height > other.height)
-            || (self.width > other.height && self.height > other.width)
-    }
-}
+//     fn can_hold(&self, other: &Rectangle) -> bool {
+//         (self.width > other.width && self.height > other.height)
+//             || (self.width > other.height && self.height > other.width)
+//     }
 
-fn main() {
-    let rect1 = Rectangle {
-        width: 30,
-        height: 50,
-    };
-    let rect2 = Rectangle {
-        width: 10,
-        height: 40,
-    };
-    let rect3 = Rectangle {
-        width: 60,
-        height: 45,
-    };
+//     fn square(side: u32) -> Self {
+//         // <- associated function
+//         Self {
+//             width: side,
+//             height: side,
+//         }
+//     }
+// }
 
-    println!("Can rect1 hold rect2? {}", rect1.can_hold(&rect2));
-    println!("Can rect1 hold rect3? {}", rect1.can_hold(&rect3));
-}
+// fn main() {
+//     // let rect1 = Rectangle {
+//     //     width: 30,
+//     //     height: 50,
+//     // };
+//     // let rect2 = Rectangle {
+//     //     width: 10,
+//     //     height: 40,
+//     // };
+//     // let rect3 = Rectangle {
+//     //     width: 60,
+//     //     height: 45,
+//     // };
+
+//     // println!("Can rect1 hold rect2? {}", rect1.can_hold(&rect2));
+//     // println!("Can rect1 hold rect3? {}", rect1.can_hold(&rect3));
+
+//     let square1 = Rectangle::square(7);
+//     println!("Square1 area: {} sqm", square1.area());
+// }
+
+// // The idiomatic way to define a constructor function is to make an associated function called new, but that is not enforced by the language.
+
+// *****************************************************************
+// ***** Methods and ownership *****
+// #[derive(Copy, Clone)] // <- API authors must explicitly add #[derive(Copy)] to indicate that they expect their struct to always be Copy.
+//     width: u32,
+//     height: u32,
+// }
+// impl Rectangle {
+//     fn area(&self) -> u32 {
+//         self.width * self.height
+//     }
+
+//     fn set_width(&mut self, width: u32) {
+//         self.width = width;
+//     }
+
+//     fn max(self, other: Self) -> Self {
+//         let w = self.width.max(other.width);
+//         let h = self.height.max(other.height);
+//         Rectangle {
+//             width: w,
+//             height: h,
+//         }
+//     }
+// }
+// fn main() {
+//     let mut rect = Rectangle {
+//         width: 0,
+//         height: 0,
+//     };
+//     println!("{}", rect.area());
+//     rect.set_width(0);
+
+//     let rect_ref = &rect;
+//     // rect_ref.set_width(2);
+
+//     let other_rect = Rectangle {
+//         width: 1,
+//         height: 1,
+//     };
+//     let max_rect = rect.max(other_rect);
+//     println!("{}", rect.area());
+// }
+//
+// ***********************************************************************************
+// ***** Enums and Pattern Matching *****
+//
