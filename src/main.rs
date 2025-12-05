@@ -466,16 +466,21 @@
 
 //     let loopback = IpAddr::V6(String::from("::1"));
 // }
-// you can put any kind of data inside an enum variant: strings, numeric types, or structs, for example. You can even include another enum!
+// you can put any kind of data inside an enum variant: strings, numeric types, or structs, for example.
+// You can even include another enum!
 // enums can implement methods
 // ***** Option<T> *****
 //
 //
-fn main() {
-    let some_number = Some(5);
-    let some_char = Some('e');
+// fn main() {
+//     let some_number = Some(5);
+//     let some_char = Some('e');
 
-    let absent_number: Option<i32> = None;
-}
+//     let absent_number: Option<i32> = None;
+// }
 
-// The type of some_number is Option<i32>. The type of some_char is Option<char>, which is a different type. Rust can infer these types because we’ve specified a value inside the Some variant. For absent_number, Rust requires us to annotate the overall Option type: the compiler can’t infer the type that the corresponding Some variant will hold by looking only at a None value. Here, we tell Rust that we mean for absent_number to be of type Option<i32>.
+// The type of some_number is Option<i32>. The type of some_char is Option<char>, which is a different type.
+// Rust can infer these types because we’ve specified a value inside the Some variant.
+// For absent_number, Rust requires us to annotate the overall Option type:
+// the compiler can’t infer the type that the corresponding Some variant will hold by looking only at a None value.
+// Here, we tell Rust that we mean for absent_number to be of type Option<i32>.
