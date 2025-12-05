@@ -238,37 +238,139 @@
 // *****************************************************************
 // **** Structs ****
 
-struct User {
-    active: bool,
-    username: String,
-    email: String,
-    sign_in_count: u64,
+// struct User {
+//     active: bool,
+//     username: String,
+//     email: String,
+//     sign_in_count: u64,
+// }
+
+// struct Color(i32, i32, i32); // <- Tuple Struct
+
+// fn build_user(email: String, username: String) -> User {
+//     User {
+//         active: true,
+//         // username: username,
+//         // email: email,
+//         email,    // <- init shorthand
+//         username, // <- variable name matches key
+//         sign_in_count: 1,
+//     }
+// }
+
+// fn main() {
+//     let mut user1 = build_user(
+//         String::from("someone@example.com"),
+//         String::from("someusername123"),
+//     );
+
+//     println!("{}", user1.email);
+//     println!("{}", user1.username);
+//     println!("{}", user1.active);
+//     println!("{}", user1.sign_in_count);
+//     let black = Color(0, 0, 0);
+//     let Color(r, g, b) = &black; // <- destructuring the tuple struct
+//     println!("{}, {}, {}", r, g, b);
+//     let mail = &mut user1.email; // <- borrowing mutable reference
+//     *mail = String::from("anotherEmail@mail.com"); // <- mutating
+//     println!("{}", user1.email);
+// }
+// ********************************************
+// struct Rectangle {
+//     width: u32,
+//     height: u32,
+// }
+
+// fn main() {
+//     let rect1 = Rectangle {
+//         width: 30,
+//         height: 50,
+//     };
+
+//     println!(
+//         "The area of the rectangle is {} square pixels.",
+//         area(rect1)
+//     );
+// }
+
+// fn area(dimensions: Rectangle) -> u32 {
+//     dimensions.width * dimensions.height
+// }
+// *******************************************
+// #[derive(Debug)]
+// struct Rectangle {
+//     width: u32,
+//     height: u32,
+// }
+
+// fn main() {
+//     let scale = 2;
+//     let rect1 = Rectangle {
+//         width: dbg!(30 * scale),
+//         height: 50,
+//     };
+
+//     dbg!(&rect1);
+// }
+//
+// ***************************************************************
+// ***** Methods *****
+//
+// #[derive(Debug)]
+// struct Rectangle {
+//     width: u32,
+//     height: u32,
+// }
+
+// impl Rectangle {
+//     // <- method
+//     fn area(&self) -> u32 { // <- self to reference the rectangle instance (borrowing, not taking ownership)
+//         self.width * self.height
+//     }
+// }
+
+// fn main() {
+//     let rect1 = Rectangle {
+//         width: 30,
+//         height: 50,
+//     };
+
+//     println!(
+//         "The area of the rectangle is {} square pixels.",
+//         rect1.area() // <- method all with instance.method()
+//     );
+// }
+
+struct Rectangle {
+    width: u32,
+    height: u32,
 }
 
-struct Color(i32, i32, i32); // <- Tuple Struct
+impl Rectangle {
+    fn area(&self) -> u32 {
+        self.width * self.height
+    }
 
-fn build_user(email: String, username: String) -> User {
-    User {
-        active: true,
-        // username: username,
-        // email: email,
-        email,    // <- init shorthand
-        username, // <- variable name matches key
-        sign_in_count: 1,
+    fn can_hold(&self, other: &Rectangle) -> bool {
+        (self.width > other.width && self.height > other.height)
+            || (self.width > other.height && self.height > other.width)
     }
 }
 
 fn main() {
-    let user1 = build_user(
-        String::from("someone@example.com"),
-        String::from("someusername123"),
-    );
+    let rect1 = Rectangle {
+        width: 30,
+        height: 50,
+    };
+    let rect2 = Rectangle {
+        width: 10,
+        height: 40,
+    };
+    let rect3 = Rectangle {
+        width: 60,
+        height: 45,
+    };
 
-    println!("{}", user1.email);
-    println!("{}", user1.username);
-    println!("{}", user1.active);
-    println!("{}", user1.sign_in_count);
-    let black = Color(0, 0, 0);
-    let Color(r, g, b) = &black; // <- destructuring the tuple struct
-    println!("{}, {}, {}", r, g, b);
+    println!("Can rect1 hold rect2? {}", rect1.can_hold(&rect2));
+    println!("Can rect1 hold rect3? {}", rect1.can_hold(&rect3));
 }
