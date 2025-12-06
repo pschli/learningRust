@@ -484,3 +484,65 @@
 // For absent_number, Rust requires us to annotate the overall Option type:
 // the compiler can’t infer the type that the corresponding Some variant will hold by looking only at a None value.
 // Here, we tell Rust that we mean for absent_number to be of type Option<i32>.
+// *********************************************************************************
+// ***** The match Control Flow Construct *****
+
+// #[derive(Debug)]
+// enum UsState {
+//     Alabama,
+//     Alaska,
+//     // --snip--
+// }
+
+// enum Coin {
+//     Penny,
+//     Nickel,
+//     Dime,
+//     Quarter(UsState), // <- binding
+// }
+
+// fn value_in_cents(coin: Coin) -> u8 {
+//     match coin {
+//         Coin::Penny => 1,
+//         Coin::Nickel => 5,
+//         Coin::Dime => 10,
+//         Coin::Quarter(state) => {
+//             println!("State quarter from {state:?}!"); // <- bindung to a value
+//             25
+//         }
+//     }
+// }
+
+// fn main() {
+//     value_in_cents(Coin::Quarter(UsState::Alaska));
+// }
+
+// ***** matching with Option<T> *****
+
+fn main() {
+    fn plus_one(x: Option<i32>) -> Option<i32> {
+        match x {
+            // <- the arms’ patterns must cover all possibilities. Matches in Rust are exhaustive
+            None => None,
+            Some(i) => Some(i + 1),
+        }
+    }
+
+    let five = Some(5);
+    let six = plus_one(five); // <- adds one
+    let none = plus_one(None); // <- returns None
+
+    let dice_roll = 9;
+    match dice_roll {
+        3 => add_fancy_hat(),
+        7 => remove_fancy_hat(),
+        //    other => move_player(other), // this does bind all other cases
+        //    _ => reroll(), // _ is a special pattern that matches any value and does not bind to that value.
+        _ => (), // do nothing
+    }
+
+    fn add_fancy_hat() {}
+    fn remove_fancy_hat() {}
+    fn reroll() {}
+    fn move_player(num_spaces: u8) {}
+}
