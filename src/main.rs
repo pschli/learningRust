@@ -519,30 +519,130 @@
 
 // ***** matching with Option<T> *****
 
-fn main() {
-    fn plus_one(x: Option<i32>) -> Option<i32> {
-        match x {
-            // <- the arms’ patterns must cover all possibilities. Matches in Rust are exhaustive
-            None => None,
-            Some(i) => Some(i + 1),
-        }
-    }
+// fn main() {
+//     fn plus_one(x: Option<i32>) -> Option<i32> {
+//         match x {
+//             // <- the arms’ patterns must cover all possibilities. Matches in Rust are exhaustive
+//             None => None,
+//             Some(i) => Some(i + 1),
+//         }
+//     }
 
-    let five = Some(5);
-    let six = plus_one(five); // <- adds one
-    let none = plus_one(None); // <- returns None
+//     let five = Some(5);
+//     let six = plus_one(five); // <- adds one
+//     let none = plus_one(None); // <- returns None
 
-    let dice_roll = 9;
-    match dice_roll {
-        3 => add_fancy_hat(),
-        7 => remove_fancy_hat(),
-        //    other => move_player(other), // this does bind all other cases
-        //    _ => reroll(), // _ is a special pattern that matches any value and does not bind to that value.
-        _ => (), // do nothing
-    }
+//     let dice_roll = 9;
+//     match dice_roll {
+//         3 => add_fancy_hat(),
+//         7 => remove_fancy_hat(),
+//         //    other => move_player(other), // this does bind all other cases
+//         //    _ => reroll(), // _ is a special pattern that matches any value and does not bind to that value.
+//         _ => (), // do nothing
+//     }
 
-    fn add_fancy_hat() {}
-    fn remove_fancy_hat() {}
-    fn reroll() {}
-    fn move_player(num_spaces: u8) {}
-}
+//     fn add_fancy_hat() {}
+//     fn remove_fancy_hat() {}
+//     fn reroll() {}
+//     fn move_player(num_spaces: u8) {}
+// }
+// ***********************************************************************
+// ***** Concise Control Flow with if let and let else *********************
+//
+// fn main() {
+//     let config_max = Some(3u8);
+//     if let Some(max) = config_max {
+//         // this is the same as matching with a non binding default case
+//         println!("The maximum is configured to be {max}");
+//     }
+// }
+// #[derive(Debug)]
+// enum UsState {
+//     Alabama,
+//     Alaska,
+//     // --snip--
+// }
+
+// enum Coin {
+//     Penny,
+//     Nickel,
+//     Dime,
+//     Quarter(UsState),
+// }
+
+// fn main() {
+//     let coin = Coin::Penny;
+//     let mut count = 0;
+//     if let Coin::Quarter(state) = coin {
+//         // <- see above, same functionality
+//         println!("State quarter from {state:?}!");
+//     } else {
+//         count += 1;
+//     }
+// }
+
+// #[derive(Debug)] // so we can inspect the state in a minute
+// enum UsState {
+//     Alabama,
+//     Alaska,
+//     // --snip--
+// }
+
+// impl UsState {
+//     fn existed_in(&self, year: u16) -> bool {
+//         match self {
+//             UsState::Alabama => year >= 1819,
+//             UsState::Alaska => year >= 1959,
+//             // -- snip --
+//         }
+//     }
+// }
+
+// enum Coin {
+//     Penny,
+//     Nickel,
+//     Dime,
+//     Quarter(UsState),
+// }
+
+// fn describe_state_quarter(coin: Coin) -> Option<String> {
+//     let state = if let Coin::Quarter(state) = coin {
+//         // <- produces a value
+//         state
+//     } else {
+//         return None;
+//     };
+
+//     if state.existed_in(1900) {
+//         // <- uses the value (state) conditionally => no nesting
+//         Some(format!("{state:?} is pretty old, for America!"))
+//     } else {
+//         Some(format!("{state:?} is relatively new."))
+//     }
+// }
+
+// fn describe_state_quarter(coin: Coin) -> Option<String> {
+//     let Coin::Quarter(state) = coin else { // let.. else binds the pattern from the outer scope if it matches
+//         return None;
+//     };
+
+//     if state.existed_in(1900) { // <- we can use state here
+//         Some(format!("{state:?} is pretty old, for America!"))
+//     } else {
+//         Some(format!("{state:?} is relatively new."))
+//     }
+// }
+
+// fn main() {
+//     if let Some(desc) = describe_state_quarter(Coin::Quarter(UsState::Alaska)) {
+//         println!("{desc}");
+//     }
+// }
+//
+// Library crates don’t have a main function, and they don’t compile to an executable.
+// Instead, they define functionality intended to be shared with multiple projects.
+// For example, the rand crate we used in Chapter 2 provides functionality that generates random numbers.
+// Most of the time when Rustaceans say “crate,” they mean library crate,
+// and they use “crate” interchangeably with the general programming concept of a “library.”
+//
+//
