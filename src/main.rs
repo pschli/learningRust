@@ -645,4 +645,86 @@
 // Most of the time when Rustaceans say “crate,” they mean library crate,
 // and they use “crate” interchangeably with the general programming concept of a “library.”
 //
+// A package can contain as many binary crates as you like, but at most only one library crate.
+// A package must contain at least one crate, whether that’s a library or binary crate.
 //
+// mod front_of_house {
+//     mod hosting {
+//         fn add_to_waitlist() {}
+
+//         fn seat_at_table() {}
+//     }
+
+//     mod serving {
+//         fn take_order() {}
+
+//         fn serve_order() {}
+
+//         fn take_payment() {}
+//     }
+// }
+// Modules let us organize code within a crate for readability and easy reuse.
+// Modules also allow us to control the privacy of items because code within a module is private by default.
+// Private items are internal implementation details not available for outside use.
+// We can choose to make modules and the items within them public, which exposes them to allow external code to use and depend on them.
+// In Rust, all items (functions, methods, structs, enums, modules, and constants) are private to parent modules by default.
+// If you want to make an item like a function or struct private, you put it in a module.
+//
+// mod front_of_house {
+//     pub mod hosting {
+//         // <- needs pub to access
+//         pub fn add_to_waitlist() {} // <- needs pub to access
+//     }
+// }
+
+// pub fn eat_at_restaurant() {
+//     // Absolute path
+//     crate::front_of_house::hosting::add_to_waitlist();
+
+//     // Relative path
+//     front_of_house::hosting::add_to_waitlist();
+// }
+//
+// We can also use pub to designate structs and enums as public, but there are a few extra details
+// to the usage of pub with structs and enums. If we use pub before a struct definition, we make the struct public,
+// but the struct’s fields will still be private. We can make each field public or not on a case-by-case basis.
+//
+// mod back_of_house {
+//     pub struct Breakfast {
+//         pub toast: String,
+//         seasonal_fruit: String,
+//     }
+
+//     impl Breakfast {
+//         pub fn summer(toast: &str) -> Breakfast {
+//             Breakfast {
+//                 toast: String::from(toast),
+//                 seasonal_fruit: String::from("peaches"),
+//             }
+//         }
+//     }
+// }
+
+// pub fn eat_at_restaurant() {
+//     // Order a breakfast in the summer with Rye toast.
+//     let mut meal = back_of_house::Breakfast::summer("Rye");
+//     // Change our mind about what bread we'd like.
+//     meal.toast = String::from("Wheat");
+//     println!("I'd like {} toast please", meal.toast);
+
+//     // The next line won't compile if we uncomment it; we're not allowed
+//     // to see or modify the seasonal fruit that comes with the meal.
+//     // meal.seasonal_fruit = String::from("blueberries"); // <- doesn't work, because seasonal_fruit is private
+// }
+
+mod back_of_house {
+    pub enum Appetizer {
+        Soup,
+        Salad,
+    }
+}
+
+pub fn eat_at_restaurant() {
+    let order1 = back_of_house::Appetizer::Soup; // <- no problem here, al variants of an enum are public if the enum is.
+    let order2 = back_of_house::Appetizer::Salad;
+}
