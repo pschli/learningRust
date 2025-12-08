@@ -717,14 +717,50 @@
 //     // meal.seasonal_fruit = String::from("blueberries"); // <- doesn't work, because seasonal_fruit is private
 // }
 
-mod back_of_house {
-    pub enum Appetizer {
-        Soup,
-        Salad,
-    }
-}
+// mod back_of_house {
+//     pub enum Appetizer {
+//         Soup,
+//         Salad,
+//     }
+// }
 
-pub fn eat_at_restaurant() {
-    let order1 = back_of_house::Appetizer::Soup; // <- no problem here, al variants of an enum are public if the enum is.
-    let order2 = back_of_house::Appetizer::Salad;
-}
+// pub fn eat_at_restaurant() {
+//     let order1 = back_of_house::Appetizer::Soup; // <- no problem here, all variants of an enum are public if the enum is.
+//     let order2 = back_of_house::Appetizer::Salad;
+// }
+//
+// mod front_of_house {
+//     pub mod hosting {
+//         pub fn add_to_waitlist() {}
+//     }
+// }
+
+// use crate::front_of_house::hosting;
+// // use crate::front_of_house::hosting::add_to_waitlist;
+
+// pub fn eat_at_restaurant() {
+//     hosting::add_to_waitlist(); // <- this is idiomatic, because the origin of the function is clear.
+//     //    add_to_waitlist();
+// }
+
+// // On the other hand, when bringing in structs, enums, and other items with use, it’s idiomatic to specify the full path.
+// // The exception to this idiom is if we’re bringing two items with the same name into scope with use statements,
+// // because Rust doesn’t allow that.
+// //
+// use std::collections::HashMap;
+
+// fn main() {
+//     let mut map = HashMap::new();
+//     map.insert(1, 2);
+// }
+
+// use std::fmt::Result;
+// use std::io::Result as IoResult; // <- solves the naming conflict
+
+// fn function1() -> Result {
+//     // --snip--
+// }
+
+// fn function2() -> IoResult<()> {
+//     // --snip--
+// }
