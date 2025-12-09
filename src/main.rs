@@ -874,45 +874,89 @@
 // is a growable, mutable, owned, UTF-8 encoded string type. When Rustaceans refer to “strings” in Rust,
 // they might be referring to either the String or the string slice &str types, not just one of those types.
 //
+// fn main() {
+//     let mut s = String::new();
+
+//     let data = "initial contents";
+
+//     let s = data.to_string();
+
+//     // The method also works on a literal directly:
+//     let s = "initial contents".to_string();
+
+//     let s = String::from("initial contents");
+
+//     let mut s = String::from("foo");
+//     s.push_str("bar"); // <- The push_str method takes a string slice because we don’t necessarily want to take ownership of the parameter.
+
+//     let s1 = String::from("Hello, ");
+//     let s2 = String::from("world!");
+//     let s3 = s1 + &s2; // <- note s1 has been moved here and can no longer be used
+
+//     let s1 = String::from("tic");
+//     let s2 = String::from("tac");
+//     let s3 = String::from("toe");
+
+//     let s = format!("{s1}-{s2}-{s3}");
+
+//     println!("{s1}");
+//     println!("{s}");
+//     // let h = s1[0]; // <- Rust strings don’t support indexing, because their length is in bytes
+//     //                      and UTF-8 characters can take more than one byte per letter
+//     match s1.chars().nth(0) {
+//         Some(c) => println!("{c}"),
+//         None => {}
+//     };
+
+//     for c in "Зд".chars() {
+//         println!("{c}");
+//     }
+
+//     for b in "Зд".bytes() {
+//         println!("{b}");
+//     }
+// }
+//
+// *********************************************************************************************************
+// ***** Hashmaps *****
+//
 fn main() {
-    let mut s = String::new();
+    use std::collections::HashMap;
 
-    let data = "initial contents";
+    let mut scores = HashMap::new();
 
-    let s = data.to_string();
+    scores.insert(String::from("Blue"), 10);
+    scores.insert(String::from("Yellow"), 50);
 
-    // The method also works on a literal directly:
-    let s = "initial contents".to_string();
+    let team_name = String::from("Blue");
+    let score = scores.get(&team_name).copied().unwrap_or(0);
 
-    let s = String::from("initial contents");
+    println!("Blue: {score}");
 
-    let mut s = String::from("foo");
-    s.push_str("bar"); // <- The push_str method takes a string slice because we don’t necessarily want to take ownership of the parameter.
+    scores.insert(String::from("Blue"), 25); // <- overwriting
 
-    let s1 = String::from("Hello, ");
-    let s2 = String::from("world!");
-    let s3 = s1 + &s2; // <- note s1 has been moved here and can no longer be used
+    scores.entry(String::from("Yellow")).or_insert(60); // <- not updating, if key exists
+    scores.entry(String::from("Red")).or_insert(50); // <- new entry, if key doesn't exist
 
-    let s1 = String::from("tic");
-    let s2 = String::from("tac");
-    let s3 = String::from("toe");
-
-    let s = format!("{s1}-{s2}-{s3}");
-
-    println!("{s1}");
-    println!("{s}");
-    // let h = s1[0]; // <- Rust strings don’t support indexing, because their length is in bytes
-    //                      and UTF-8 characters can take more than one byte per letter
-    match s1.chars().nth(0) {
-        Some(c) => println!("{c}"),
-        None => {}
-    };
-
-    for c in "Зд".chars() {
-        println!("{c}");
+    for (k, v) in scores {
+        println!("{k}: {v}")
     }
 
-    for b in "Зд".bytes() {
-        println!("{b}");
+    let field_name = String::from("Favorite color");
+    let field_value = String::from("Blue");
+
+    let mut map = HashMap::new();
+    map.insert(field_name, field_value);
+    // println!("{field_name}"); // <- moved by insert()
+
+    let text = "hello world wonderful world";
+
+    let mut map1 = HashMap::new();
+
+    for word in text.split_whitespace() {
+        let count = map1.entry(word).or_insert(0);
+        *count += 1;
     }
+
+    println!("{map1:?}");
 }
