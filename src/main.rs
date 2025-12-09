@@ -801,31 +801,104 @@
 // ***** Vectors *****
 //
 
+// fn main() {
+//     let mut v = Vec::new();
+
+//     v.push(5);
+//     v.push(6);
+//     v.push(7);
+//     v.push(8);
+
+//     let third: &i32 = &v[2];
+//     println!("The third element is {third}");
+
+//     let third: Option<&i32> = v.get(2); // <- this is safe agains out of bounds
+//     match third {
+//         Some(third) => println!("The third element is {third}"),
+//         None => println!("There is no third element."),
+//     }
+
+//     for i in &v {
+//         // <- iterating
+//         println!("{i}");
+//     }
+
+//     let mut v2 = vec![100, 32, 57];
+//     for i in &mut v2 {
+//         *i += 50;
+//         println!("{i}");
+//     }
+// }
+//
+// ******** iterators ******
+// fn main() {
+//     use std::slice::Iter;
+//     let mut v: Vec<i32> = vec![1, 2];
+//     let mut iter: Iter<'_, i32> = v.iter();
+//     let n1: &i32 = iter.next().unwrap();
+//     let n2: &i32 = iter.next().unwrap();
+//     let end: Option<&i32> = iter.next();
+// }
+
+// Observe that the iterator iter is a pointer that moves through each element of the vector.
+// The next method advances the iterator and returns an optional reference to the previous element,
+// either Some (which we unwrap) or None at the end of the vector. Also: to use iterators safely,
+// Rust does not allow you to add or remove elements from the vector during iteration.
+// One way to iterate over a vector without using a pointer is with a range:
+
+// let mut v: Vec<i32>        = vec![1, 2];
+// let mut iter: Range<usize> = 0 .. v.len();
+// let i1: usize              = iter.next().unwrap();
+// let n1: &i32               = &v[i1];
+
+// ***** enums in vectors *****
+//
+// fn main() {
+//     enum SpreadsheetCell {
+//         Int(i32),
+//         Float(f64),
+//         Text(String),
+//     }
+
+//     let row = vec![
+//         SpreadsheetCell::Int(3),
+//         SpreadsheetCell::Text(String::from("blue")),
+//         SpreadsheetCell::Float(10.12),
+//     ];
+// }
+// ********************************************************************************
+// ***** Strings *******************************
+//
+// We discuss strings in the context of collections because strings are implemented as a collection of bytes.
+// The String type, which is provided by Rust’s standard library rather than coded into the core language,
+// is a growable, mutable, owned, UTF-8 encoded string type. When Rustaceans refer to “strings” in Rust,
+// they might be referring to either the String or the string slice &str types, not just one of those types.
+//
 fn main() {
-    let mut v = Vec::new();
+    let mut s = String::new();
 
-    v.push(5);
-    v.push(6);
-    v.push(7);
-    v.push(8);
+    let data = "initial contents";
 
-    let third: &i32 = &v[2];
-    println!("The third element is {third}");
+    let s = data.to_string();
 
-    let third: Option<&i32> = v.get(2); // <- this is safe agains out of bounds
-    match third {
-        Some(third) => println!("The third element is {third}"),
-        None => println!("There is no third element."),
-    }
+    // The method also works on a literal directly:
+    let s = "initial contents".to_string();
 
-    for i in &v {
-        // <- iterating
-        println!("{i}");
-    }
+    let s = String::from("initial contents");
 
-    let mut v2 = vec![100, 32, 57];
-    for i in &mut v2 {
-        *i += 50;
-        println!("{i}");
-    }
+    let mut s = String::from("foo");
+    s.push_str("bar"); // <- The push_str method takes a string slice because we don’t necessarily want to take ownership of the parameter.
+
+    let s1 = String::from("Hello, ");
+    let s2 = String::from("world!");
+    let s3 = s1 + &s2; // <- note s1 has been moved here and can no longer be used
+
+    let s1 = String::from("tic");
+    let s2 = String::from("tac");
+    let s3 = String::from("toe");
+
+    let s = format!("{s1}-{s2}-{s3}");
+
+    println!("{s1}");
+    println!("{s}")
 }
