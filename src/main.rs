@@ -900,5 +900,19 @@ fn main() {
     let s = format!("{s1}-{s2}-{s3}");
 
     println!("{s1}");
-    println!("{s}")
+    println!("{s}");
+    // let h = s1[0]; // <- Rust strings don’t support indexing, because their length is in bytes
+    //                      and UTF-8 characters can take more than one byte per letter
+    match s1.chars().nth(0) {
+        Some(c) => println!("{c}"),
+        None => {}
+    };
+
+    for c in "Зд".chars() {
+        println!("{c}");
+    }
+
+    for b in "Зд".bytes() {
+        println!("{b}");
+    }
 }
