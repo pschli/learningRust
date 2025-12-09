@@ -764,3 +764,68 @@
 // fn function2() -> IoResult<()> {
 //     // --snip--
 // }
+
+// mod front_of_house {
+//     pub mod hosting {
+//         pub fn add_to_waitlist() {}
+//     }
+// }
+
+// pub use crate::front_of_house::hosting; // <- bringing into scope
+
+// pub fn eat_at_restaurant() {
+//     hosting::add_to_waitlist();
+// }
+
+// Before this change, external code would have to call the add_to_waitlist function by using the
+// path restaurant::front_of_house::hosting::add_to_waitlist(), which also would have required the front_of_house module
+// to be marked as pub. Now that this pub use has re-exported the hosting module from the root module,
+// external code can use the path restaurant::hosting::add_to_waitlist() instead.
+//
+// Note that the standard std library is also a crate that’s external to our package.
+// Because the standard library is shipped with the Rust language, we don’t need to change Cargo.toml to include std.
+// But we do need to refer to it with use to bring items from there into our package’s scope.
+// For example, with HashMap we would use this line:
+
+// use std::collections::HashMap;
+
+// // If we’re using multiple items defined in the same crate or same module, we can use nested paths to bring them into scope in one line.
+
+// use std::io::{self, Write};
+// use std::{cmp::Ordering, io}; // <- self refers to std::io - This line brings std::io and std::io::Write into scope.
+
+// // If we want to bring all public items defined in a path into scope, we can specify that path followed by the * glob operator:
+
+// use std::collections::*;
+// ***********************************************************************************************
+// ***** Vectors *****
+//
+
+fn main() {
+    let mut v = Vec::new();
+
+    v.push(5);
+    v.push(6);
+    v.push(7);
+    v.push(8);
+
+    let third: &i32 = &v[2];
+    println!("The third element is {third}");
+
+    let third: Option<&i32> = v.get(2); // <- this is safe agains out of bounds
+    match third {
+        Some(third) => println!("The third element is {third}"),
+        None => println!("There is no third element."),
+    }
+
+    for i in &v {
+        // <- iterating
+        println!("{i}");
+    }
+
+    let mut v2 = vec![100, 32, 57];
+    for i in &mut v2 {
+        *i += 50;
+        println!("{i}");
+    }
+}
