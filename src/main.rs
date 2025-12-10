@@ -920,43 +920,119 @@
 // *********************************************************************************************************
 // ***** Hashmaps *****
 //
+// fn main() {
+//     use std::collections::HashMap;
+
+//     let mut scores = HashMap::new();
+
+//     scores.insert(String::from("Blue"), 10);
+//     scores.insert(String::from("Yellow"), 50);
+
+//     let team_name = String::from("Blue");
+//     let score = scores.get(&team_name).copied().unwrap_or(0);
+
+//     println!("Blue: {score}");
+
+//     scores.insert(String::from("Blue"), 25); // <- overwriting
+
+//     scores.entry(String::from("Yellow")).or_insert(60); // <- not updating, if key exists
+//     scores.entry(String::from("Red")).or_insert(50); // <- new entry, if key doesn't exist
+
+//     for (k, v) in scores {
+//         println!("{k}: {v}")
+//     }
+
+//     let field_name = String::from("Favorite color");
+//     let field_value = String::from("Blue");
+
+//     let mut map = HashMap::new();
+//     map.insert(field_name, field_value);
+//     // println!("{field_name}"); // <- moved by insert()
+
+//     let text = "hello world wonderful world";
+
+//     let mut map1 = HashMap::new();
+
+//     for word in text.split_whitespace() {
+//         let count = map1.entry(word).or_insert(0);
+//         *count += 1;
+//     }
+
+//     println!("{map1:?}");
+// }
+// *****************************************************************************
+// ***** Errors *****
+//
+
+// fn main() {
+//     panic!("crash and burn");
+// }
+
+// fn main() {
+//     let v = vec![1, 2, 3];
+
+//     v[99]; // panic
+// }
+
+// ***** Recoverable Errors with Result *****
+
+// use std::fs::File;
+// use std::io::ErrorKind;
+
+// fn main() {
+//     let greeting_file_result = File::open("hello.txt");
+
+//     let greeting_file = match greeting_file_result {
+//         Ok(file) => file,
+//         Err(error) => match error.kind() {
+//             ErrorKind::NotFound => match File::create("hello.txt") {
+//                 Ok(fc) => fc,
+//                 Err(e) => panic!("Problem creating the file: {e:?}"),
+//             },
+//             _ => {
+//                 panic!("Problem opening the file: {error:?}");
+//             }
+//         },
+//     };
+// }
+//
+//  ***** unwrap & expect
+
+// use std::fs::File;
+
+// fn main() {
+//     let greeting_file = File::open("hello.txt").unwrap(); // <- panic! on error
+// }
+
+// use std::fs::File;
+
+// fn main() {
+//     let greeting_file =
+//         File::open("hello.txt").expect("hello.txt should be included in this project"); // <- panic on error with overwritten message
+// }
+
+#![allow(unused)]
 fn main() {
-    use std::collections::HashMap;
+    use std::fs::File;
+    use std::io::{self, Read};
 
-    let mut scores = HashMap::new();
+    fn read_username_from_file() -> Result<String, io::Error> {
+        // function returns Result<T, E>
+        let username_file_result = File::open("hello.txt");
 
-    scores.insert(String::from("Blue"), 10);
-    scores.insert(String::from("Yellow"), 50);
+        let mut username_file = match username_file_result {
+            Ok(file) => file,
+            Err(e) => return Err(e), // <- returns an Error
+        };
 
-    let team_name = String::from("Blue");
-    let score = scores.get(&team_name).copied().unwrap_or(0);
+        let mut username = String::new();
 
-    println!("Blue: {score}");
-
-    scores.insert(String::from("Blue"), 25); // <- overwriting
-
-    scores.entry(String::from("Yellow")).or_insert(60); // <- not updating, if key exists
-    scores.entry(String::from("Red")).or_insert(50); // <- new entry, if key doesn't exist
-
-    for (k, v) in scores {
-        println!("{k}: {v}")
+        match username_file.read_to_string(&mut username) {
+            Ok(_) => Ok(username), // <- on success returns a string
+            Err(e) => Err(e),      // <- returns an error
+        }
     }
-
-    let field_name = String::from("Favorite color");
-    let field_value = String::from("Blue");
-
-    let mut map = HashMap::new();
-    map.insert(field_name, field_value);
-    // println!("{field_name}"); // <- moved by insert()
-
-    let text = "hello world wonderful world";
-
-    let mut map1 = HashMap::new();
-
-    for word in text.split_whitespace() {
-        let count = map1.entry(word).or_insert(0);
-        *count += 1;
-    }
-
-    println!("{map1:?}");
 }
+// It’s up to the calling code to decide what to do with those values.
+// If the calling code gets an Err value, it could call panic! and crash the program, use a default username,
+// or look up the username from somewhere other than a file, for example.
