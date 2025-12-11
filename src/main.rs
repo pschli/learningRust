@@ -1092,26 +1092,135 @@
 // ***** Custom Types for Validation *****
 //
 
-#![allow(unused)]
+// #![allow(unused)]
+// fn main() {
+//     pub struct Guess {
+//         value: i32,
+//     }
+
+//     impl Guess {
+//         // range check in the new method either panics or creates a new Guess with the value and returns it.
+//         // A function that has a parameter or returns only numbers between 1 and 100 could then declare in its signature
+//         // that it takes or returns a Guess rather than an i32 and wouldn’t need to do any additional checks in its body.
+//         pub fn new(value: i32) -> Guess {
+//             if value < 1 || value > 100 {
+//                 panic!("Guess value must be between 1 and 100, got {value}.");
+//             }
+
+//             Guess { value }
+//         }
+
+//         pub fn value(&self) -> i32 {
+//             self.value
+//         }
+//     }
+// }
+
+// **************************************************************************
+// ***** Generic Types *****
+// ***** Structs *****
+
+// struct Point<T, U> {
+//     // <- allows for different types for each parameter
+//     x: T,
+//     y: U,
+// }
+
+// fn main() {
+//     let both_integer = Point { x: 5, y: 10 };
+//     let both_float = Point { x: 1.0, y: 4.0 };
+//     let integer_and_float = Point { x: 5, y: 4.0 };
+// }
+
+// // ***** enums *****
+
+// enum Option<T> {
+//     Some(T),
+//     None,
+// }
+// enum Result<T, E> {
+//     Ok(T),
+//     Err(E),
+// }
+
+// ***** Methods *****
+//
+
+// struct Point<T> {
+//     x: T,
+//     y: T,
+// }
+
+// impl<T> Point<T> {
+//     fn x(&self) -> &T {
+//         &self.x
+//     }
+// }
+
+// fn main() {
+//     let p = Point { x: 5, y: 10 };
+
+//     println!("p.x = {}", p.x());
+// }
+
+// ***** Traits *****
+//
+
+pub trait Summary {
+    fn summarize(&self) -> String;
+}
+
+pub struct NewsArticle {
+    pub headline: String,
+    pub location: String,
+    pub author: String,
+    pub content: String,
+}
+
+impl Summary for NewsArticle {
+    fn summarize(&self) -> String {
+        format!("{}, by {} ({})", self.headline, self.author, self.location)
+    }
+}
+
+pub struct SocialPost {
+    pub username: String,
+    pub content: String,
+    pub reply: bool,
+    pub repost: bool,
+}
+
+impl Summary for SocialPost {
+    fn summarize(&self) -> String {
+        format!("{}: {}", self.username, self.content)
+    }
+}
+
 fn main() {
-    pub struct Guess {
-        value: i32,
-    }
+    let post = SocialPost {
+        username: String::from("horse_ebooks"),
+        content: String::from("of course, as you probably already know, people"),
+        reply: false,
+        repost: false,
+    };
 
-    impl Guess {
-        // range check in the new method either panics or creates a new Guess with the value and returns it.
-        // A function that has a parameter or returns only numbers between 1 and 100 could then declare in its signature
-        // that it takes or returns a Guess rather than an i32 and wouldn’t need to do any additional checks in its body.
-        pub fn new(value: i32) -> Guess {
-            if value < 1 || value > 100 {
-                panic!("Guess value must be between 1 and 100, got {value}.");
-            }
+    let article = NewsArticle {
+        headline: String::from("Penguins win the Stanley Cup Championship!"),
+        location: String::from("Pittsburgh, PA, USA"),
+        author: String::from("Iceburgh"),
+        content: String::from(
+            "The Pittsburgh Penguins once again are the best \
+             hockey team in the NHL.",
+        ),
+    };
 
-            Guess { value }
-        }
+    println!("New article available! {}", article.summarize()); // summarize is used depending on post type
+    println!("1 new post: {}", post.summarize()); // summarize is used depending on post type
+}
 
-        pub fn value(&self) -> i32 {
-            self.value
-        }
-    }
+// ***** Traits as parameters *****
+//
+pub fn notify(item: &impl Summary) {
+    // <- accepts any type that implements Summary
+    println!("Breaking news! {}", item.summarize());
 }
