@@ -1011,28 +1011,107 @@
 //         File::open("hello.txt").expect("hello.txt should be included in this project"); // <- panic on error with overwritten message
 // }
 
-#![allow(unused)]
-fn main() {
-    use std::fs::File;
-    use std::io::{self, Read};
+// #![allow(unused)]
+// fn main() {
+//     use std::fs::File;
+//     use std::io::{self, Read};
 
-    fn read_username_from_file() -> Result<String, io::Error> {
-        // function returns Result<T, E>
-        let username_file_result = File::open("hello.txt");
+//     fn read_username_from_file() -> Result<String, io::Error> {
+//         // function returns Result<T, E>
+//         let username_file_result = File::open("hello.txt");
 
-        let mut username_file = match username_file_result {
-            Ok(file) => file,
-            Err(e) => return Err(e), // <- returns an Error
-        };
+//         let mut username_file = match username_file_result {
+//             Ok(file) => file,
+//             Err(e) => return Err(e), // <- returns an Error
+//         };
 
-        let mut username = String::new();
+//         let mut username = String::new();
 
-        match username_file.read_to_string(&mut username) {
-            Ok(_) => Ok(username), // <- on success returns a string
-            Err(e) => Err(e),      // <- returns an error
-        }
-    }
-}
+//         match username_file.read_to_string(&mut username) {
+//             Ok(_) => Ok(username), // <- on success returns a string
+//             Err(e) => Err(e),      // <- returns an error
+//         }
+//     }
+// }
 // It’s up to the calling code to decide what to do with those values.
 // If the calling code gets an Err value, it could call panic! and crash the program, use a default username,
 // or look up the username from somewhere other than a file, for example.
+
+// #![allow(unused)]
+// fn main() {
+//     use std::fs::File;
+//     use std::io::{self, Read};
+
+//     fn read_username_from_file() -> Result<String, io::Error> {
+//         let mut username_file = File::open("hello.txt")?; // <- The ? placed after a Result value is defined to work in almost the same way
+//         //    as the match expressions we defined to handle the Result values in the example above.
+//         let mut username = String::new();
+//         username_file.read_to_string(&mut username)?;
+//         Ok(username) // <- If the value of the Result is an Ok, the value inside the Ok will get returned from this expression,
+// and the program will continue. If the value is an Err, the Err will be returned from the whole function
+// as if we had used the return keyword so the error value gets propagated to the calling code.
+//
+// There is a difference between what the match expression does and what the ? operator does:
+// error values that have the ? operator called on them go through the from function, defined in the From trait
+// in the standard library, which is used to convert values from one type into another. When the ? operator calls the from function,
+// the error type received is converted into the error type defined in the return type of the current function.
+//     }
+// }
+
+// even shorter
+//
+// #![allow(unused)]
+// fn main() {
+//     use std::fs;
+//     use std::io;
+
+//     fn read_username_from_file() -> Result<String, io::Error> {
+//         fs::read_to_string("hello.txt") // fs::read_to_string function that opens the file, creates a new String,
+//         // reads the contents of the file,
+//         // puts the contents into that String, and returns it.
+//     }
+
+//     let name = read_username_from_file();
+//     println!("{name:?}");
+// }
+
+// fn last_char_of_first_line(text: &str) -> Option<char> {
+//     text.lines().next()?.chars().last() // ? can be used with options
+// }
+
+// fn main() {
+//     assert_eq!(
+//         last_char_of_first_line("Hello, world\nHow are you today?"),
+//         Some('d')
+//     );
+
+//     assert_eq!(last_char_of_first_line(""), None);
+//     assert_eq!(last_char_of_first_line("\nhi"), None);
+// }
+// ************************************************************************
+// ***** Custom Types for Validation *****
+//
+
+#![allow(unused)]
+fn main() {
+    pub struct Guess {
+        value: i32,
+    }
+
+    impl Guess {
+        // range check in the new method either panics or creates a new Guess with the value and returns it.
+        // A function that has a parameter or returns only numbers between 1 and 100 could then declare in its signature
+        // that it takes or returns a Guess rather than an i32 and wouldn’t need to do any additional checks in its body.
+        pub fn new(value: i32) -> Guess {
+            if value < 1 || value > 100 {
+                panic!("Guess value must be between 1 and 100, got {value}.");
+            }
+
+            Guess { value }
+        }
+
+        pub fn value(&self) -> i32 {
+            self.value
+        }
+    }
+}
