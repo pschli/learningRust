@@ -1166,61 +1166,78 @@
 // ***** Traits *****
 //
 
-pub trait Summary {
-    fn summarize(&self) -> String;
-}
+// pub trait Summary {
+//     fn summarize(&self) -> String;
+// }
 
-pub struct NewsArticle {
-    pub headline: String,
-    pub location: String,
-    pub author: String,
-    pub content: String,
-}
+// pub struct NewsArticle {
+//     pub headline: String,
+//     pub location: String,
+//     pub author: String,
+//     pub content: String,
+// }
 
-impl Summary for NewsArticle {
-    fn summarize(&self) -> String {
-        format!("{}, by {} ({})", self.headline, self.author, self.location)
-    }
-}
+// impl Summary for NewsArticle {
+//     fn summarize(&self) -> String {
+//         format!("{}, by {} ({})", self.headline, self.author, self.location)
+//     }
+// }
 
-pub struct SocialPost {
-    pub username: String,
-    pub content: String,
-    pub reply: bool,
-    pub repost: bool,
-}
+// pub struct SocialPost {
+//     pub username: String,
+//     pub content: String,
+//     pub reply: bool,
+//     pub repost: bool,
+// }
 
-impl Summary for SocialPost {
-    fn summarize(&self) -> String {
-        format!("{}: {}", self.username, self.content)
-    }
-}
+// impl Summary for SocialPost {
+//     fn summarize(&self) -> String {
+//         format!("{}: {}", self.username, self.content)
+//     }
+// }
 
-fn main() {
-    let post = SocialPost {
-        username: String::from("horse_ebooks"),
-        content: String::from("of course, as you probably already know, people"),
-        reply: false,
-        repost: false,
-    };
+// fn main() {
+//     let post = SocialPost {
+//         username: String::from("horse_ebooks"),
+//         content: String::from("of course, as you probably already know, people"),
+//         reply: false,
+//         repost: false,
+//     };
 
-    let article = NewsArticle {
-        headline: String::from("Penguins win the Stanley Cup Championship!"),
-        location: String::from("Pittsburgh, PA, USA"),
-        author: String::from("Iceburgh"),
-        content: String::from(
-            "The Pittsburgh Penguins once again are the best \
-             hockey team in the NHL.",
-        ),
-    };
+//     let article = NewsArticle {
+//         headline: String::from("Penguins win the Stanley Cup Championship!"),
+//         location: String::from("Pittsburgh, PA, USA"),
+//         author: String::from("Iceburgh"),
+//         content: String::from(
+//             "The Pittsburgh Penguins once again are the best \
+//              hockey team in the NHL.",
+//         ),
+//     };
 
-    println!("New article available! {}", article.summarize()); // summarize is used depending on post type
-    println!("1 new post: {}", post.summarize()); // summarize is used depending on post type
-}
+//     println!("New article available! {}", article.summarize()); // summarize is used depending on post type
+//     println!("1 new post: {}", post.summarize()); // summarize is used depending on post type
+// }
 
-// ***** Traits as parameters *****
-//
-pub fn notify(item: &impl Summary) {
-    // <- accepts any type that implements Summary
-    println!("Breaking news! {}", item.summarize());
-}
+// // ***** Traits as parameters (impl Traits) *****
+// //
+// pub fn notify(item: &impl Summary) {
+//     // <- accepts any type that implements Summary
+//     println!("Breaking news! {}", item.summarize());
+// }
+
+// pub fn notify2<T: Summary>(item1: &T, item2: &T) {
+//     // <- accepts any type that implements Summary, but constrains the parameters to the same type
+//     println!("Breaking news! {}", item1.summarize());
+//     println!("Further news! {}", item2.summarize());
+// }
+// pub fn notify3(item: &(impl Summary + Display)) {} // must implement both
+// pub fn notify<T: Summary + Display>(item: &T) {} // same
+
+// // ***** Traitbounds with where *****
+// //
+
+// fn some_function<T, U>(t: &T, u: &U) -> i32
+// where
+//     T: Display + Clone,
+//     U: Clone + Debug,
+// {}
