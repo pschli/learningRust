@@ -1241,3 +1241,78 @@
 //     T: Display + Clone,
 //     U: Clone + Debug,
 // {}
+
+// ***** Returning Types That Implement Traits *****
+
+// pub trait Summary {
+//     fn summarize(&self) -> String;
+// }
+
+// pub struct NewsArticle {
+//     pub headline: String,
+//     pub location: String,
+//     pub author: String,
+//     pub content: String,
+// }
+
+// impl Summary for NewsArticle {
+//     fn summarize(&self) -> String {
+//         format!("{}, by {} ({})", self.headline, self.author, self.location)
+//     }
+// }
+
+// pub struct SocialPost {
+//     pub username: String,
+//     pub content: String,
+//     pub reply: bool,
+//     pub repost: bool,
+// }
+
+// impl Summary for SocialPost {
+//     fn summarize(&self) -> String {
+//         format!("{}: {}", self.username, self.content)
+//     }
+// }
+
+// fn returns_summarizable() -> impl Summary {
+//     SocialPost {
+//         username: String::from("horse_ebooks"),
+//         content: String::from("of course, as you probably already know, people"),
+//         reply: false,
+//         repost: false,
+//     } // while the compiler doesn't need to know the return type, only one possible type may be returned
+// }
+
+// ***** Using Trait Bounds to Conditionally Implement Methods *****
+
+// use std::fmt::Display;
+
+// struct Pair<T> {
+//     x: T,
+//     y: T,
+// }
+
+// impl<T> Pair<T> {
+//     fn new(x: T, y: T) -> Self {
+//         Self { x, y }
+//     }
+// }
+
+// impl<T: Display + PartialOrd> Pair<T> { // the impl of this method is conditionally bound to T implementing Display and PartialOrd
+//     fn cmp_display(&self) {
+//         if self.x >= self.y {
+//             println!("The largest member is x = {}", self.x);
+//         } else {
+//             println!("The largest member is y = {}", self.y);
+//         }
+//     }
+// }
+//
+// ***** blanked implementations *****
+//
+// impl<T: Display> ToString for T {
+//     // --snip--
+//     // Because the standard library has this blanket implementation, we can call the to_string method defined by the ToString trait
+//     // on any type that implements the Display trait. For example, we can turn integers into their corresponding String values like
+//     // this because integers implement Display
+// }
