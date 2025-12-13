@@ -1316,3 +1316,49 @@
 //     // on any type that implements the Display trait. For example, we can turn integers into their corresponding String values like
 //     // this because integers implement Display
 // }
+// ***************************************************************************************
+// ***** Generic Lifetimes in Functions *****
+
+// fn main() {
+//     let string1 = String::from("abcd");
+//     let string2 = "xyz";
+
+//     let result = longest(string1.as_str(), string2);
+//     println!("The longest string is {result}");
+// }
+
+// // Lifetime annotations don’t change how long any of the references live.
+// // Rather, they describe the relationships of the lifetimes of multiple references to each other
+// // without affecting the lifetimes.
+// // Lifetime annotations have a slightly unusual syntax:
+// // the names of lifetime parameters must start with an apostrophe (')
+// // and are usually all lowercase and very short, like generic types.
+// // Most people use the name 'a for the first lifetime annotation.
+// // We place lifetime parameter annotations after the & of a reference,
+// // using a space to separate the annotation from the reference’s type.
+// fn longest<'a>(x: &'a str, y: &'a str) -> &'a str {
+//     if x.len() > y.len() { x } else { y } // it doesn't matter which reference we return
+//     // as we state that the lifetime will be the same for either
+// }
+// // When we pass concrete references to longest, the concrete lifetime that is substituted for 'a
+// // is the part of the scope of x that overlaps with the scope of y. In other words,
+// // the generic lifetime 'a will get the concrete lifetime that is equal to the smaller of the lifetimes
+// // of x and y. Because we’ve annotated the returned reference with the same lifetime parameter 'a,
+// // the returned reference will also be valid for the length of the smaller of the lifetimes of x and y.
+
+// ***** Lifetime Annotations in Struct Definitions *****
+
+#[derive(Debug)]
+
+struct ImportantExcerpt<'a> {
+    part: &'a str,
+}
+
+fn main() {
+    let novel = String::from("Call me Ishmael. Some years ago...");
+    let first_sentence = novel.split('.').next().unwrap();
+    let i = ImportantExcerpt {
+        part: first_sentence,
+    };
+    println!("{i:#?}");
+}
