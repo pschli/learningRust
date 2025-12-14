@@ -1348,17 +1348,97 @@
 
 // ***** Lifetime Annotations in Struct Definitions *****
 
-#[derive(Debug)]
+// #[derive(Debug)]
 
-struct ImportantExcerpt<'a> {
-    part: &'a str,
-}
+// struct ImportantExcerpt<'a> {
+//     part: &'a str,
+// }
+
+// fn main() {
+//     let novel = String::from("Call me Ishmael. Some years ago...");
+//     let first_sentence = novel.split('.').next().unwrap();
+//     let i = ImportantExcerpt {
+//         part: first_sentence,
+//     };
+//     println!("{i:#?}");
+// }
+// ***** Lifetime Elision *****
+
+// fn first_word(s: &str) -> &str {
+//     let bytes = s.as_bytes();
+
+//     for (i, &item) in bytes.iter().enumerate() {
+//         if item == b' ' {
+//             return &s[0..i];
+//         }
+//     }
+
+//     &s[..]
+// }
+
+// fn main() {
+//     let my_string = String::from("hello world");
+
+//     // first_word works on slices of `String`s
+//     let word = first_word(&my_string[..]);
+
+//     let my_string_literal = "hello world";
+
+//     // first_word works on slices of string literals
+//     let word = first_word(&my_string_literal[..]);
+
+//     // Because string literals *are* string slices already,
+//     // this works too, without the slice syntax!
+//     let word = first_word(my_string_literal);
+// }
+// fn first_word<'a>(s: &'a str) -> &'a str {...}  // This isn't necessary,
+// the compiler recognizes this pattern and omits the demand for lifetime annotations
+
+// ***** Lifetime Annotations in Method Definitions *****
+
+// struct ImportantExcerpt<'a> {
+//     part: &'a str,
+// }
+
+// impl<'a> ImportantExcerpt<'a> {
+//     fn level(&self) -> i32 {
+//         3
+//     }
+// }
+
+// impl<'a> ImportantExcerpt<'a> {
+//     fn announce_and_return_part(&self, announcement: &str) -> &str {
+//         println!("Attention please: {announcement}");
+//         self.part
+//     }
+// }
+
+// fn main() {
+//     let novel = String::from("Call me Ishmael. Some years ago...");
+//     let first_sentence = novel.split('.').next().unwrap();
+//     let i = ImportantExcerpt {
+//         part: first_sentence,
+//     };
+// }
+
+// ***** Generic Type Parameters, Trait Bounds, and Lifetimes Together *****
+//
 
 fn main() {
-    let novel = String::from("Call me Ishmael. Some years ago...");
-    let first_sentence = novel.split('.').next().unwrap();
-    let i = ImportantExcerpt {
-        part: first_sentence,
-    };
-    println!("{i:#?}");
+    let string1 = String::from("abcd");
+    let string2 = "xyz";
+
+    let result =
+        longest_with_an_announcement(string1.as_str(), string2, "Today is someone's birthday!");
+    println!("The longest string is {result}");
+}
+
+use std::fmt::Display;
+
+fn longest_with_an_announcement<'a, T>(x: &'a str, y: &'a str, ann: T) -> &'a str
+where
+    T: Display,
+{
+    println!("Announcement! {ann}");
+    if x.len() > y.len() { x } else { y }
 }
