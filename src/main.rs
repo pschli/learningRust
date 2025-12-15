@@ -1424,21 +1424,39 @@
 // ***** Generic Type Parameters, Trait Bounds, and Lifetimes Together *****
 //
 
-fn main() {
-    let string1 = String::from("abcd");
-    let string2 = "xyz";
+// fn main() {
+//     let string1 = String::from("abcd");
+//     let string2 = "xyz";
 
-    let result =
-        longest_with_an_announcement(string1.as_str(), string2, "Today is someone's birthday!");
-    println!("The longest string is {result}");
+//     let result =
+//         longest_with_an_announcement(string1.as_str(), string2, "Today is someone's birthday!");
+//     println!("The longest string is {result}");
+// }
+
+// use std::fmt::Display;
+
+// fn longest_with_an_announcement<'a, T>(x: &'a str, y: &'a str, ann: T) -> &'a str
+// where
+//     T: Display,
+// {
+//     println!("Announcement! {ann}");
+//     if x.len() > y.len() { x } else { y }
+// }
+
+// *********************************************************************************
+// ***** Tests *****
+//
+pub fn add(left: u64, right: u64) -> u64 {
+    left + right
 }
 
-use std::fmt::Display;
+#[cfg(test)]
+mod tests {
+    use super::*;
 
-fn longest_with_an_announcement<'a, T>(x: &'a str, y: &'a str, ann: T) -> &'a str
-where
-    T: Display,
-{
-    println!("Announcement! {ann}");
-    if x.len() > y.len() { x } else { y }
+    #[test]
+    fn it_works() {
+        let result = add(2, 2);
+        assert_eq!(result, 4);
+    }
 }
