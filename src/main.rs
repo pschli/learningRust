@@ -1446,17 +1446,220 @@
 // *********************************************************************************
 // ***** Tests *****
 //
-pub fn add(left: u64, right: u64) -> u64 {
-    left + right
-}
+// pub fn add(left: u64, right: u64) -> u64 {
+//     left + right
+// }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
+// #[cfg(test)]
+// mod tests {
+//     use super::*;
 
-    #[test]
-    fn it_works() {
-        let result = add(2, 2);
-        assert_eq!(result, 4);
-    }
-}
+//     #[test]
+//     fn exploration() {
+//         let result = add(2, 2);
+//         assert_eq!(result, 4);
+//     }
+// } // test passes
+
+// pub fn add(left: u64, right: u64) -> u64 {
+//     left + right
+// }
+
+// #[cfg(test)]
+// mod tests {
+//     use super::*;
+
+//     #[test]
+//     fn exploration() {
+//         let result = add(2, 2);
+//         assert_eq!(result, 4);
+//     }
+
+//     #[test]
+//     fn another() {
+//         panic!("Make this test fail"); // test failes
+//     }
+// }
+
+// #[derive(Debug)]
+// struct Rectangle {
+//     width: u32,
+//     height: u32,
+// }
+
+// impl Rectangle {
+//     fn can_hold(&self, other: &Rectangle) -> bool {
+//         (self.width > other.width && self.height > other.height)
+//             || (self.height > other.width && self.width > other.height)
+//     }
+// }
+
+// #[cfg(test)]
+// mod tests {
+//     use super::*;
+
+//     #[test]
+//     fn larger_can_hold_smaller() {
+//         let larger = Rectangle {
+//             width: 8,
+//             height: 7,
+//         };
+//         let smaller = Rectangle {
+//             width: 5,
+//             height: 1,
+//         };
+
+//         assert!(larger.can_hold(&smaller)); // should be true => pass
+//     }
+
+//     #[test]
+//     fn smaller_cannot_hold_larger() {
+//         let larger = Rectangle {
+//             width: 8,
+//             height: 7,
+//         };
+//         let smaller = Rectangle {
+//             width: 5,
+//             height: 1,
+//         };
+
+//         assert!(!smaller.can_hold(&larger), "Smaller check failed.");
+//     }
+// }
+//
+
+// pub struct Guess {
+//     value: i32,
+// }
+
+// impl Guess {
+//     pub fn new(value: i32) -> Guess {
+//         if value < 1 {
+//             panic!("Guess value must be greater than or equal to 1, got {value}.");
+//         } else if value > 100 {
+//             panic!("Guess value must be less than or equal to 100, got {value}.");
+//         }
+
+//         Guess { value }
+//     }
+// }
+
+// #[cfg(test)]
+// mod tests {
+//     use super::*;
+
+//     #[test]
+//     #[should_panic(expected = "less than or equal to 100")]
+//     fn greater_than_100() {
+//         Guess::new(200);
+//     }
+// }
+
+// pub fn add(left: u64, right: u64) -> u64 {
+//     left + right
+// }
+
+// #[cfg(test)]
+// mod tests {
+//     use super::*;
+
+//     #[test]
+//     fn it_works() -> Result<(), String> {
+//         let result = add(2, 2);
+
+//         if result == 4 {
+//             Ok(())
+//         } else {
+//             Err(String::from("two plus two does not equal four"))
+//         }
+//     }
+// }
+
+// f you don’t want to run the tests in parallel or if you want more fine-grained control
+// over the number of threads used, you can send the --test-threads flag and the number
+// of threads you want to use to the test binary. Take a look at the following example:
+
+// $ cargo test -- --test-threads=1
+
+// fn prints_and_returns_10(a: i32) -> i32 {
+//     println!("I got the value {a}"); // This output is only shown on fail, otherwise we must use --show-output
+//     10
+// }
+
+// #[cfg(test)]
+// mod tests {
+//     use super::*;
+
+//     #[test]
+//     fn this_test_will_pass() {
+//         let value = prints_and_returns_10(4);
+//         assert_eq!(value, 10);
+//     }
+
+//     #[test]
+//     fn this_test_will_fail() {
+//         let value = prints_and_returns_10(8);
+//         assert_eq!(value, 5);
+//     }
+// }
+
+// cargo test name_of_the_test only executes the named test,
+// partial name matches execute all matching tests
+// we can exclude tests with #[ignore]
+
+// ***** Organizing Tests *****
+
+// ***** Unit tests *****
+
+// pub fn add_two(a: usize) -> usize {
+//     internal_adder(a, 2)
+// }
+
+// fn internal_adder(left: usize, right: usize) -> usize {
+//     left + right
+// }
+
+// #[cfg(test)]
+// mod tests {
+//     use super::*;
+
+//     #[test]
+//     fn internal() {
+//         let result = internal_adder(2, 2);
+//         assert_eq!(result, 4);
+//     }
+// }
+
+// // ***** Integration test *****
+
+// use adder::add_two;
+
+// #[test]
+// fn it_adds_two() {
+//     let result = add_two(2);
+//     assert_eq!(result, 4);
+// }
+
+// // This structure prevents Rust treating the common test module as
+// // tests that run and can be used for setup functions
+// //
+// ├── Cargo.lock
+// ├── Cargo.toml
+// ├── src
+// │   └── lib.rs
+// └── tests
+//     ├── common
+//     │   └── mod.rs
+//     └── integration_test.rs
+
+//     use adder::add_two;
+
+//     mod common;
+
+//     #[test]
+//     fn it_adds_two() {
+//         common::setup();
+
+//         let result = add_two(2);
+//         assert_eq!(result, 4);
+//     }
