@@ -1668,55 +1668,89 @@
 // ***** Closures *****
 //
 
-#[derive(Debug, PartialEq, Copy, Clone)]
-enum ShirtColor {
-    Red,
-    Blue,
-}
+// #[derive(Debug, PartialEq, Copy, Clone)]
+// enum ShirtColor {
+//     Red,
+//     Blue,
+// }
 
-struct Inventory {
-    shirts: Vec<ShirtColor>,
-}
+// struct Inventory {
+//     shirts: Vec<ShirtColor>,
+// }
 
-impl Inventory {
-    fn giveaway(&self, user_preference: Option<ShirtColor>) -> ShirtColor {
-        user_preference.unwrap_or_else(|| self.most_stocked())
-    }
+// impl Inventory {
+//     fn giveaway(&self, user_preference: Option<ShirtColor>) -> ShirtColor {
+//         user_preference.unwrap_or_else(|| self.most_stocked()) // the closure captures the immutable reference to self Inventory instance and
+//         // passes it with the code we specify to the unwrap_or_else method.
+//         // Functions, on the other hand, are not able to capture their environment in this way.
+//     }
 
-    fn most_stocked(&self) -> ShirtColor {
-        let mut num_red = 0;
-        let mut num_blue = 0;
+//     fn most_stocked(&self) -> ShirtColor {
+//         let mut num_red = 0;
+//         let mut num_blue = 0;
 
-        for color in &self.shirts {
-            match color {
-                ShirtColor::Red => num_red += 1,
-                ShirtColor::Blue => num_blue += 1,
-            }
-        }
-        if num_red > num_blue {
-            ShirtColor::Red
-        } else {
-            ShirtColor::Blue
-        }
-    }
-}
+//         for color in &self.shirts {
+//             match color {
+//                 ShirtColor::Red => num_red += 1,
+//                 ShirtColor::Blue => num_blue += 1,
+//             }
+//         }
+//         if num_red > num_blue {
+//             ShirtColor::Red
+//         } else {
+//             ShirtColor::Blue
+//         }
+//     }
+// }
+
+// fn main() {
+//     let store = Inventory {
+//         shirts: vec![ShirtColor::Blue, ShirtColor::Red, ShirtColor::Blue],
+//     };
+
+//     let user_pref1 = Some(ShirtColor::Red);
+//     let giveaway1 = store.giveaway(user_pref1);
+//     println!(
+//         "The user with preference {:?} gets {:?}",
+//         user_pref1, giveaway1
+//     );
+
+//     let user_pref2 = None;
+//     let giveaway2 = store.giveaway(user_pref2);
+//     println!(
+//         "The user with preference {:?} gets {:?}",
+//         user_pref2, giveaway2
+//     );
+
+//     // storing a closure in a variable
+//     //     let expensive_closure = |num: u32| -> u32 {
+//     //         println!("calculating slowly...");
+//     //         thread::sleep(Duration::from_secs(2));
+//     //         num
+//     //     };
+//     //
+
+//     // fn and closure syntax similarities / differences
+//     // fn  add_one_v1   (x: u32) -> u32 { x + 1 }
+//     // let add_one_v2 = |x: u32| -> u32 { x + 1 };
+//     // let add_one_v3 = |x|             { x + 1 };
+//     // let add_one_v4 = |x|               x + 1  ;
+// }
+//
+// Closures can capture values from their environment in three ways, which directly map to the three ways
+// a function can take a parameter: borrowing immutably, borrowing mutably, and taking ownership.
+// The closure will decide which of these to use based on what the body of the function does with the captured values.
+
+use std::thread;
 
 fn main() {
-    let store = Inventory {
-        shirts: vec![ShirtColor::Blue, ShirtColor::Red, ShirtColor::Blue],
-    };
+    let list = vec![1, 2, 3];
+    println!("Before defining closure: {list:?}");
 
-    let user_pref1 = Some(ShirtColor::Red);
-    let giveaway1 = store.giveaway(user_pref1);
-    println!(
-        "The user with preference {:?} gets {:?}",
-        user_pref1, giveaway1
-    );
-
-    let user_pref2 = None;
-    let giveaway2 = store.giveaway(user_pref2);
-    println!(
-        "The user with preference {:?} gets {:?}",
-        user_pref2, giveaway2
-    );
+    // If you want to force the closure to take ownership of the values it uses in the environment
+    // even though the body of the closure doesn’t strictly need ownership,
+    // you can use the move keyword before the parameter list.
+    thread::spawn(move || println!("From thread: {list:?}"))
+        .join()
+        .unwrap();
 }
