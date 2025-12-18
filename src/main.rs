@@ -1741,16 +1741,61 @@
 // a function can take a parameter: borrowing immutably, borrowing mutably, and taking ownership.
 // The closure will decide which of these to use based on what the body of the function does with the captured values.
 
-use std::thread;
+// use std::thread;
+
+// fn main() {
+//     let list = vec![1, 2, 3];
+//     println!("Before defining closure: {list:?}");
+
+//     // If you want to force the closure to take ownership of the values it uses in the environment
+//     // even though the body of the closure doesn’t strictly need ownership,
+//     // you can use the move keyword before the parameter list.
+//     thread::spawn(move || println!("From thread: {list:?}"))
+//         .join()
+//         .unwrap();
+// }
+// // Once a closure has captured a reference or captured ownership of a value from the environment
+// // where the closure is defined (thus affecting what, if anything, is moved into the closure),
+// // the code in the body of the closure defines what happens to the references or values
+// // when the closure is evaluated later (thus affecting what, if anything, is moved out of the closure).
+// // A closure body can do any of the following: move a captured value out of the closure, mutate the captured value,
+// // neither move nor mutate the value, or capture nothing from the environment to begin with.
+
+// #[derive(Debug)]
+// struct Rectangle {
+//     width: u32,
+//     height: u32,
+// }
+
+// fn main() {
+//     let mut list = [
+//         Rectangle {
+//             width: 10,
+//             height: 1,
+//         },
+//         Rectangle {
+//             width: 3,
+//             height: 5,
+//         },
+//         Rectangle {
+//             width: 7,
+//             height: 12,
+//         },
+//     ];
+
+//     list.sort_by_key(|r| r.width); // uses a closure, but doesn't capture anything
+//     println!("{list:#?}");
+// }
+// *************************************************************************************************
+// ***** Iterators *****
+//
 
 fn main() {
-    let list = vec![1, 2, 3];
-    println!("Before defining closure: {list:?}");
+    let v1 = vec![1, 2, 3];
 
-    // If you want to force the closure to take ownership of the values it uses in the environment
-    // even though the body of the closure doesn’t strictly need ownership,
-    // you can use the move keyword before the parameter list.
-    thread::spawn(move || println!("From thread: {list:?}"))
-        .join()
-        .unwrap();
+    let v1_iter = v1.iter();
+
+    for val in v1_iter {
+        println!("Got: {val}");
+    }
 }
