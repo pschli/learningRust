@@ -1790,12 +1790,83 @@
 // ***** Iterators *****
 //
 
-fn main() {
-    let v1 = vec![1, 2, 3];
+// #[test]
+// fn iterator_demonstration() {
+//     let v1 = vec![1, 2, 3];
 
-    let v1_iter = v1.iter();
+//     let mut v1_iter = v1.iter();
+//     //Note that we needed to make v1_iter mutable: calling the next method on an iterator changes internal state
+//     // that the iterator uses to keep track of where it is in the sequence. In other words, this code consumes,
+//     // or uses up, the iterator. Each call to next eats up an item from the iterator. We didn’t need to make v1_iter mutable
+//     // when we used a for loop because the loop took ownership of v1_iter and made it mutable behind the scenes.
+//     // The iter method produces an iterator over immutable references. If we want to create an iterator
+//     // that takes ownership of v1 and returns owned values, we can call into_iter instead of iter.
+//     // Similarly, if we want to iterate over mutable references, we can call iter_mut instead of iter.
 
-    for val in v1_iter {
-        println!("Got: {val}");
+//     assert_eq!(v1_iter.next(), Some(&1));
+//     assert_eq!(v1_iter.next(), Some(&2));
+//     assert_eq!(v1_iter.next(), Some(&3));
+//     assert_eq!(v1_iter.next(), None);
+// }
+
+// // ********************
+
+// fn main() {
+//     let v1: Vec<i32> = vec![1, 2, 3];
+
+//     let v2: Vec<_> = v1.iter().map(|x| x + 1).collect(); // collect consulmes the iterator and collects the resulting values.
+
+//     // You can chain multiple calls to iterator adapters to perform complex actions in a readable way.
+//     // But because all iterators are lazy, you have to call one of the consuming adapter methods to get results from calls to iterator adapters.
+
+//     assert_eq!(v2, vec![2, 3, 4]);
+// }
+
+#[derive(PartialEq, Debug)]
+struct Shoe {
+    size: u32,
+    style: String,
+}
+
+fn shoes_in_size(shoes: Vec<Shoe>, shoe_size: u32) -> Vec<Shoe> {
+    shoes.into_iter().filter(|s| s.size == shoe_size).collect()
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn filters_by_size() {
+        let shoes = vec![
+            Shoe {
+                size: 10,
+                style: String::from("sneaker"),
+            },
+            Shoe {
+                size: 13,
+                style: String::from("sandal"),
+            },
+            Shoe {
+                size: 10,
+                style: String::from("boot"),
+            },
+        ];
+
+        let in_my_size = shoes_in_size(shoes, 10);
+
+        assert_eq!(
+            in_my_size,
+            vec![
+                Shoe {
+                    size: 10,
+                    style: String::from("sneaker")
+                },
+                Shoe {
+                    size: 10,
+                    style: String::from("boot")
+                },
+            ]
+        );
     }
 }
