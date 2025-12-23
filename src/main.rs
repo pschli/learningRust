@@ -1870,3 +1870,16 @@
 //         );
 //     }
 // }
+// **********************************************************************************************
+// ***** Smart Pointers *****
+// A pointer is a general concept for a variable that contains an address in memory.
+// Smart pointers, on the other hand, are data structures that act like a pointer but also have additional metadata and capabilities.
+// Boxes
+
+// fn main() {
+//     let b = Box::new(5);
+//     println!("b = {b}");
+// }
+
+// ***** Deref *****
+//
