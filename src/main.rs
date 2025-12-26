@@ -1883,3 +1883,101 @@
 
 // ***** Deref *****
 //
+//  Rust does deref coercion when it finds types and trait implementations in three cases:
+
+// From &T to &U when T: Deref<Target=U>
+// From &mut T to &mut U when T: DerefMut<Target=U>
+// From &mut T to &U when T: Deref<Target=U>
+//
+// The first two cases are the same except that the second implements mutability.
+// The first case states that if you have a &T, and T implements Deref to some type U, you can get a &U transparently.
+// The second case states that the same deref coercion happens for mutable references.
+//
+// Rust will also coerce a mutable reference to an immutable one. But the reverse is not possible:
+// immutable references will never coerce to mutable references.
+//
+// ***** Drop Trait *****
+//
+// The second trait important to the smart pointer pattern is Drop,
+// which lets you customize what happens when a value is about to go out of scope.
+
+// struct CustomSmartPointer {
+//     data: String,
+// }
+
+// impl Drop for CustomSmartPointer {
+//     fn drop(&mut self) {
+//         println!("Dropping CustomSmartPointer with data `{}`!", self.data);
+//     }
+//     // this will be called automatically, when the CustomSmartPointer goes out of scope.
+// }
+
+// fn main() {
+//     let c = CustomSmartPointer {
+//         data: String::from("my stuff"),
+//     };
+//     let d = CustomSmartPointer {
+//         data: String::from("other stuff"),
+//     };
+//     println!("CustomSmartPointers created.");
+// }
+
+// Rust doesn’t let us call drop explicitly because Rust would still automatically call drop on the value at the end of main.
+// This would cause a double free error because Rust would be trying to clean up the same value twice.
+
+// We can’t disable the automatic insertion of drop when a value goes out of scope, and we can’t call the drop method explicitly.
+// So, if we need to force a value to be cleaned up early, we use the std::mem::drop function.
+
+// ***** Rc<T> and multiple ownership *****
+
+// You have to enable multiple ownership explicitly by using the Rust type Rc<T>, which is an abbreviation for reference counting.
+// The Rc<T> type keeps track of the number of references to a value to determine whether or not the value is still in use.
+// If there are zero references to a value, the value can be cleaned up without any references becoming invalid.
+
+// enum List {
+//     Cons(i32, Box<List>),
+//     Nil,
+// }
+
+// use crate::List::{Cons, Nil};
+
+// fn main() {
+//     let a = Cons(5, Box::new(Cons(10, Box::new(Nil))));
+//     let b = Cons(3, Box::new(a)); // move
+//     let c = Cons(4, Box::new(a)); // use after move!
+// }
+//
+
+// enum List {
+//     Cons(i32, Rc<List>),
+//     Nil,
+// }
+
+// use crate::List::{Cons, Nil};
+// use std::rc::Rc;
+
+// fn main() {
+//     let a = Rc::new(Cons(5, Rc::new(Cons(10, Rc::new(Nil)))));
+//     let b = Cons(3, Rc::clone(&a)); // every clone() increments the reference count
+//     let c = Cons(4, Rc::clone(&a));
+// }
+
+enum List {
+    Cons(i32, Rc<List>),
+    Nil,
+}
+
+use crate::List::{Cons, Nil};
+use std::rc::Rc;
+
+fn main() {
+    let a = Rc::new(Cons(5, Rc::new(Cons(10, Rc::new(Nil)))));
+    println!("count after creating a = {}", Rc::strong_count(&a));
+    let _b = Cons(3, Rc::clone(&a));
+    println!("count after creating b = {}", Rc::strong_count(&a));
+    {
+        let _c = Cons(4, Rc::clone(&a));
+        println!("count after creating c = {}", Rc::strong_count(&a));
+    }
+    println!("count after c goes out of scope = {}", Rc::strong_count(&a));
+}
