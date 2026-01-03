@@ -2144,3 +2144,34 @@
 //         Rc::weak_count(&leaf),
 //     );
 // }
+// *******************************************************************************************************
+// ***** Concurrency ******
+
+// How to create threads to run multiple pieces of code at the same time
+// Message-passing concurrency, where channels send messages between threads
+// Shared-state concurrency, where multiple threads have access to some piece of data
+// The Sync and Send traits, which extend Rust’s concurrency guarantees to user-defined types as well as types provided by the standard library
+
+use std::thread;
+use std::time::Duration;
+
+fn main() {
+    let handle = thread::spawn(|| {
+        for i in 1..10 {
+            println!("hi number {i} from the spawned thread!");
+            thread::sleep(Duration::from_millis(1));
+        }
+    });
+
+    for i in 1..5 {
+        println!("hi number {i} from the main thread!");
+        thread::sleep(Duration::from_millis(1));
+    }
+
+    handle.join().unwrap(); // Calling join on the handle blocks the thread
+    //currently running until the thread represented by the handle terminates.
+    // Blocking a thread means that thread is prevented from performing work or exiting.
+    // The two threads continue alternating, but the main thread waits
+    // because of the call to handle.join() and does not end until the spawned thread is finished.
+    // Small details, such as where join is called, can affect whether or not your threads run at the same time.
+}
